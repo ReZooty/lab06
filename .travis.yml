@@ -12,3 +12,5 @@ addons:
     packages:
       - cmake
       - cmake-data
+- name: Coveralls GitHub Action
+  uses: coverallsapp/github-action@v1
