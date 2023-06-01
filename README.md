@@ -1,8 +1,8 @@
-[![Coverage Status](https://img.shields.io/badge/coverage-100%25-ff69b4)](https://coveralls.io/github/ReZooty/lab05)
-# lab05 by Telepov Igor
+[![Coverage Status](https://img.shields.io/badge/coverage-100%25-ff69b4)](https://coveralls.io/github/ReZooty/lab06)
+# lab06 by Telepov Igor
 # Создание теста для Account
 ```sh
-rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab05v2/tests cat > TEST1_account.cpp
+rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab06v2/tests cat > TEST1_account.cpp
 #include "Account.h"
 
 #include <gtest/gtest.h>
@@ -46,7 +46,7 @@ TEST(Account, SimpleTest) {
 ```
 # Создание теста для Transaction
 ```sh
-rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab05v2/tests cat > TEST2_transaction.cpp
+rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab06v2/tests cat > TEST2_transaction.cpp
 #include "Transaction.h"
 #include "Account.h"
 

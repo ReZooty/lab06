@@ -25,3 +25,5 @@ if(BUILD_TESTS)
   target_link_libraries(check banking gtest_main gmock_main)
   add_test(NAME check COMMAND check)
 endif()
+
+include(CPackConfig.cmake)
