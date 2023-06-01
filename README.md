@@ -67,4 +67,3 @@ jobs:
 
 ^Z
 ```
-[![Coverage Status](https://coveralls.io/repos/github/ReZooty/lab05/badge.svg?branch=main)](https://coveralls.io/github/ReZooty/lab05?branch=main)
