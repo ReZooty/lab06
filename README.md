@@ -1,120 +1,105 @@
 [![Coverage Status](https://img.shields.io/badge/coverage-100%25-ff69b4)](https://coveralls.io/github/ReZooty/lab06)
 # lab06 by Telepov Igor
-# Создание теста для Account
+
+# Изменил CPackConfig.cmake
 ```sh
-rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab06v2/tests cat > TEST1_account.cpp
-#include "Account.h"
+include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_CONTACT telepov.igor2013@yandex.ru)
+set(CPACK_PACKAGE_VERSION_MAJOR ${PRINT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PRINT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PRINT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK ${PRINT_VERSION_TWEAK})
+set(CPACK_PACKAGE_VERSION ${PRINT_VERSION})
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 
-class AccountMock : public Account {
-public:
-    AccountMock(int id, int balance) : Account(id, balance) {}
-    MOCK_CONST_METHOD0(GetBalance, int());
-    MOCK_METHOD1(ChangeBalance, void(int diff));
-    MOCK_METHOD0(Lock, void());
-    MOCK_METHOD0(Unlock, void());
-};
+set(CPACK_RPM_PACKAGE_NAME "solver_lab")
+set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+set(CPACK_RPM_PACKAGE_GROUP "solver")
+set(CPACK_RPM_PACKAGE_VERSION CPACK_PACKAGE_VERSION)
 
-TEST(Account, Mock) {
-    AccountMock acc(1, 666);
-    EXPECT_CALL(acc, GetBalance()).Times(1);
-    EXPECT_CALL(acc, ChangeBalance(testing::_)).Times(2);
-    EXPECT_CALL(acc, Lock()).Times(2);
-    EXPECT_CALL(acc, Unlock()).Times(1);
-    acc.GetBalance();
-    acc.ChangeBalance(100);
-    acc.Lock();
-    acc.ChangeBalance(100);
-    acc.Lock();
-    acc.Unlock();
-}
+set(CPACK_DEBIAN_PACKAGE_NAME "libsolver-dev")
+set(CPACK_DEBIAN_PACKAGE_PREDEPENDS "cmake >= 3.0")
+set(CPACK_DEBIAN_PACKAGE_VERSION CPACK_PACKAGE_VERSION)
 
-TEST(Account, SimpleTest) {
-    Account acc(1, 666);
-    EXPECT_EQ(acc.id(), 1);
-    EXPECT_EQ(acc.GetBalance(), 666);
-    EXPECT_THROW(acc.ChangeBalance(200), std::runtime_error);
-    EXPECT_NO_THROW(acc.Lock());
-    acc.ChangeBalance(200);
-    EXPECT_EQ(acc.GetBalance(), 866);
-    EXPECT_THROW(acc.Lock(), std::runtime_error);
-    EXPECT_NO_THROW(acc.Unlock());
-}
-
+include(CPack)
 ```
-# Создание теста для Transaction
-```sh
-rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab06v2/tests cat > TEST2_transaction.cpp
-#include "Transaction.h"
-#include "Account.h"
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-
-class TransactionMock : public Transaction {
-public:
-    MOCK_METHOD3(Make, bool(Account& from, Account& to, int sum));
-};
-
-TEST(Transaction, Mock) {
-    TransactionMock tr;
-    Account account_1(1, 100);
-    Account account_2(2, 300);
-    EXPECT_CALL(tr, Make(testing::_, testing::_, testing::_))
-        .Times(5);
-    tr.set_fee(200);
-    tr.Make(account_1, account_2, 200);
-    tr.Make(account_2, account_1, 300);
-    tr.Make(account_1, account_1, 0);
-    tr.Make(account_1, account_2, -5);
-    tr.Make(account_2, account_1, 50);
-}
-
-TEST(Transaction, SimpleTest) {
-    Transaction tr;
-    Account account_1(1, 100);
-    Account account_2(2, 300);
-    tr.set_fee(10);
-    EXPECT_EQ(tr.fee(), 10);
-    EXPECT_THROW(tr.Make(account_1, account_2, 40), std::logic_error);
-    EXPECT_THROW(tr.Make(account_1, account_2, -5), std::invalid_argument);
-    EXPECT_THROW(tr.Make(account_1, account_1, 100), std::logic_error);
-    EXPECT_FALSE(tr.Make(account_1, account_2, 400));
-    EXPECT_FALSE(tr.Make(account_2, account_1, 300));
-    EXPECT_FALSE(tr.Make(account_2, account_1, 290));
-    EXPECT_TRUE(tr.Make(account_2, account_1, 150));
-}
-
-```
-# CMakeLists
+# Изменил CMakeLists.txt
 ```sh
 cmake_minimum_required(VERSION 3.4)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_TESTS "Build tests" OFF)
+project(solver_package)
 
-if(BUILD_TESTS)
-  add_compile_options(--coverage)
-endif()
+include_directories("formatter_lib/src")
+include_directories("formatter_ex_lib/src")
+include_directories("solver_lib/src")
 
-project (banking)
+add_library(formatter_lib STATIC "formatter_lib/src/formatter.cpp")
+add_library(formatter_ex_lib STATIC "formatter_ex_lib/src/formatter_ex.cpp")
+add_library(solver_lib STATIC "solver_lib/src/solver.cpp")
 
-add_library(banking STATIC ${CMAKE_CURRENT_SOURCE_DIR}/banking/Transaction.cpp ${CMAKE_CURRENT_SOURCE_DIR}/banking/Account.cpp)
-target_include_directories(banking PUBLIC
-${CMAKE_CURRENT_SOURCE_DIR}/banking )
+add_executable(solver "solver_application/src/equation.cpp")
 
-target_link_libraries(banking gcov)
+target_link_libraries(solver solver_lib formatter_ex_lib formatter_lib)
 
-if(BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(googletest)
-  file(GLOB BANKING_TEST_SOURCES tests/*.cpp)
-  add_executable(check ${BANKING_TEST_SOURCES})
-  target_link_libraries(check banking gtest_main gmock_main)
-  add_test(NAME check COMMAND check)
-endif()
+include(CPackConfig.cmake)
 ```
+
+# Изменил Cl.yml
+```sh
+name: CMake
+
+on:
+ push:
+  branches: [master]
+  tags: -"v0.1.*.*"
+ pull_request:
+  branches: [master]
+env:
+  BUILD_TYPE: Release
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Packing
+      run: |
+        cmake -H. -B_build
+        cmake --build _build
+        cd _build
+        cpack -G "TGZ"
+        cpack -G "DEB"
+        cpack -G "RPM"
+        cd ..
+        cmake -H. -B_build -DCPACK_GENERATOR="TGZ"
+        cmake --build _build --target package
+             
+    - name: Moving
+      run: |
+        mkdir ../artifacts
+        mv _build/*.tar.gz ../artifacts/
+        mv _build/*.deb ../artifacts/
+        mv _build/*.rpm ../artifacts/
+
+    - name: Publish
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifact
+        path: artifacts/
+```
+
+# Затем выгрузил на GitHub
+```sh
+$ git add .
+$ git commit -m"final version"
+$ git tag v0.1.0.3
+$ git push origin master --tags
+
+```
+
