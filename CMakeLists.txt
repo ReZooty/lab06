@@ -5,9 +5,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(solver_package)
 
-include_directories("src/formatter_lib")
-include_directories("src/formatter_ex_lib")
-include_directories("src/solver_lib")
+include_directories("formatter_lib/src")
+include_directories("formatter_ex_lib/src")
+include_directories("solver_lib/src")
 
 add_library(formatter_lib STATIC "formatter_lib/src/formatter.cpp")
 add_library(formatter_ex_lib STATIC "formatter_ex_lib/src/formatter_ex.cpp")
