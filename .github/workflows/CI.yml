@@ -24,6 +24,12 @@ jobs:
 
       - name: Build HelloWorld
         run: cmake --build ${{github.workspace}}/hello_world_application/build
+        
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1
+        with:
+          github-token: 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
+
 
   build_Windows:
     runs-on: windows-latest
