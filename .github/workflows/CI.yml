@@ -29,9 +29,9 @@ jobs:
     - name: Moving
       run: |
         mkdir ../artifacts
-        mv cd _build/*.tar.gz ../artifacts/
-        mv cd _build/*.deb ../artifacts/
-        mv cd _build/*.rpm ../artifacts/
+        mv _build/*.tar.gz ../artifacts/
+        mv _build/*.deb ../artifacts/
+        mv _build/*.rpm ../artifacts/
 
     - name: Public
       uses: actions/upload-artifact@v2
