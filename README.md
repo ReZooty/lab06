@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/ReZooty/lab05/badge.svg)](https://coveralls.io/github/ReZooty/lab05)
+[![Coverage Status](https://img.shields.io/badge/coverage-100%25-ff69b4)](https://coveralls.io/github/ReZooty/lab05)
 # lab05 by Telepov Igor
 # Создание теста для Account
 ```sh
