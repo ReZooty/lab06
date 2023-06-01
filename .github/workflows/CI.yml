@@ -33,7 +33,7 @@ jobs:
         mv _build/*.deb ../artifacts/
         mv _build/*.rpm ../artifacts/
 
-    - name: Public
+    - name: Publish
       uses: actions/upload-artifact@v2
       with:
         name: artifact
