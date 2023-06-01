@@ -3,27 +3,18 @@ cmake_minimum_required(VERSION 3.4)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_TESTS "Build tests" OFF)
+project(solver_package)
 
-if(BUILD_TESTS)
-  add_compile_options(--coverage)
-endif()
+include_directories("formatter_lib")
+include_directories("formatter_ex_lib")
+include_directories("solver_lib")
 
-project (banking)
+add_library(formatter_lib STATIC "formatter_lib/formatter.cpp")
+add_library(formatter_ex_lib STATIC "formatter_ex_lib/formatter_ex.cpp")
+add_library(solver_lib STATIC "solver_lib/solver.cpp")
 
-add_library(banking STATIC ${CMAKE_CURRENT_SOURCE_DIR}/banking/Transaction.cpp ${CMAKE_CURRENT_SOURCE_DIR}/banking/Account.cpp)
-target_include_directories(banking PUBLIC
-${CMAKE_CURRENT_SOURCE_DIR}/banking )
+add_executable(solver "solver_application/equation.cpp")
 
-target_link_libraries(banking gcov)
-
-if(BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(googletest)
-  file(GLOB BANKING_TEST_SOURCES tests/*.cpp)
-  add_executable(check ${BANKING_TEST_SOURCES})
-  target_link_libraries(check banking gtest_main gmock_main)
-  add_test(NAME check COMMAND check)
-endif()
+target_link_libraries(solver solver_lib formatter_ex_lib formatter_lib)
 
 include(CPackConfig.cmake)
