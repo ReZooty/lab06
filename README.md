@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/Dmitriiagishev/lab05/badge.svg?branch=main)](https://coveralls.io/github/Dmitriiagishev/lab05?branch=main)
 # lab05
 # Копирование репозитория из предыдущей работы
 ```sh
