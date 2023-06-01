@@ -1,70 +1,46 @@
 [![Coverage Status](https://coveralls.io/repos/github/ReZooty/lab05/badge.svg)](https://coveralls.io/github/ReZooty/lab05)
-# lab05
-# Копирование репозитория из предыдущей работы
+# lab05 by Telepov Igor
+# Создание теста для Account
 ```sh
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051$ git clone https://github.com/Dmitriiagishev/lab03.git
-Cloning into 'lab03'...
-remote: Enumerating objects: 291, done.
-remote: Counting objects: 100% (62/62), done.
-remote: Compressing objects: 100% (48/48), done.
-remote: Total 291 (delta 21), reused 32 (delta 9), pack-reused 229
-Receiving objects: 100% (291/291), 114.66 KiB | 221.00 KiB/s, done.
-Resolving deltas: 100% (145/145), done.
-```
-# Создание каталога .github/workflows
-```sh
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051$ mkdir .github
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051$ cd .github
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051/.github$ mkdir workflows
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051/.github$ cd workflows
-```
-# Создание файла Cl.yml
-```sh
-dmitrii@DESKTOP-9P3LE74:~/Dmitriiagishev/workspace/projects/lab051/.github/workflows$ cat > CI.yml
-name: CMake
+rezooty@Katana-GF76-11UE:~/ReZooty/workspace/projects/lab05v2/tests cat > TEST1_account.cpp
+#include "Account.h"
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-jobs:
-  build_Linux:
-    runs-on: ubuntu-latest
+class AccountMock : public Account {
+public:
+    AccountMock(int id, int balance) : Account(id, balance) {}
+    MOCK_CONST_METHOD0(GetBalance, int());
+    MOCK_METHOD1(ChangeBalance, void(int diff));
+    MOCK_METHOD0(Lock, void());
+    MOCK_METHOD0(Unlock, void());
+};
 
-    steps:
-      - uses: actions/checkout@v3
+TEST(Account, Mock) {
+    AccountMock acc(1, 666);
+    EXPECT_CALL(acc, GetBalance()).Times(1);
+    EXPECT_CALL(acc, ChangeBalance(testing::_)).Times(2);
+    EXPECT_CALL(acc, Lock()).Times(2);
+    EXPECT_CALL(acc, Unlock()).Times(1);
+    acc.GetBalance();
+    acc.ChangeBalance(100);
+    acc.Lock();
+    acc.ChangeBalance(100);
+    acc.Lock();
+    acc.Unlock();
+}
 
-      - name: Configure Solver
-        run: cmake ${{github.workspace}}/solver_application/ -B ${{github.workspace}}/solver_application/build
+TEST(Account, SimpleTest) {
+    Account acc(1, 666);
+    EXPECT_EQ(acc.id(), 1);
+    EXPECT_EQ(acc.GetBalance(), 666);
+    EXPECT_THROW(acc.ChangeBalance(200), std::runtime_error);
+    EXPECT_NO_THROW(acc.Lock());
+    acc.ChangeBalance(200);
+    EXPECT_EQ(acc.GetBalance(), 866);
+    EXPECT_THROW(acc.Lock(), std::runtime_error);
+    EXPECT_NO_THROW(acc.Unlock());
+}
 
-      - name: Build Solver
-        run: cmake --build ${{github.workspace}}/solver_application/build
-
-      - name: Configure HelloWorld
-        run: cmake ${{github.workspace}}/hello_world_application/ -B ${{github.workspace}}/hello_world_application/build
-
-      - name: Build HelloWorld
-        run: cmake --build ${{github.workspace}}/hello_world_application/build
-
-  build_Windows:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure Solver
-        run: cmake ${{github.workspace}}/solver_application/ -B ${{github.workspace}}/solver_application/build
-
-      - name: Build Solver
-        run: cmake --build ${{github.workspace}}/solver_application/build
-
-      - name: Configure HelloWorld
-        run: cmake ${{github.workspace}}/hello_world_application/ -B ${{github.workspace}}/hello_world_application/build
-
-      - name: Build HelloWorld
-        run: cmake --build ${{github.workspace}}/hello_world_application/build
-
-^Z
 ```
