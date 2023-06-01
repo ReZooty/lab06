@@ -98,7 +98,7 @@ jobs:
 ```sh
 $ git add .
 $ git commit -m"final version"
-$ git tag v0.1.0.3
+$ git tag v0.1.0.2
 $ git push origin master --tags
 
 ```
