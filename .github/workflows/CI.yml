@@ -24,11 +24,6 @@ jobs:
 
       - name: Build HelloWorld
         run: cmake --build ${{github.workspace}}/hello_world_application/build
-        
-      - name: Upload coverage data to coveralls.io
-        run: |
-           pip install coveralls
-           coveralls --service=github
 
   build_Windows:
     runs-on: windows-latest
